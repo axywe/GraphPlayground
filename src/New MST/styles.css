@@ -1,0 +1,31 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+canvas {
+    border: 1px solid black;
+}
+
+table {
+    border-collapse: collapse;
+    margin: 1em;
+}
+
+table th,
+table td {
+    border: 1px solid black;
+    padding: 0.5em;
+    text-align: center;
+}
+
+.error-message {
+    background-color: red;
+    color: white;
+    padding: 1em;
+    position: fixed;
+    top: 1em;
+    right: 1em;
+    display: none;
+}

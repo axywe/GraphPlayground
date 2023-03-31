@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>Визуализация графа</title>
+</head>
+<body>
+<div class="content">
+<canvas id="graphCanvas" width="800" height="600"></canvas>
+<div id="buttons-container">
+  <button id="openModalBtn">Редактировать</button>
+  <button id="dijkstra" onclick="findShortestPath()">Дейкстра</button>
+  <button id="NNA">Алгоритм ближайшего соседа</button>
+  <button id="Prims">Алгоритм Прима</button>
+  <button id="Prufer">Код Прюфера</button>
+  <button id="revPrufer" style="display: none">Обратный код</button>
+</div>
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <div class="canvas-wrapper">
+      <div class="canvas-container">
+        <canvas id="modalCanvas" width="800" height="600"></canvas>
+      </div>
+    </div>
+    <div class="menu">
+
+      <button id="clear-btn">Очистить</button>
+      <label for="node-weight">Вес узла:</label>
+      <input type="number" id="node-weight" value="1">
+      <label for="edge-weight">Вес ребра:</label>
+      <input type="number" id="edge-weight" value="1">
+      <div class="table-container">
+      <table id="graphTable">
+        <thead>
+        <tr>
+          <th>Узел</th>
+          <th>Ребра</th>
+        </tr>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+      </table>
+        </div>
+      <div class="export-import">
+        <button id="inputBtn">Ввести данные</button>
+        <button id="export-btn">Экспорт</button>
+      </div>
+      <div class="save-cancel">
+        <button id="exit-btn">Выход</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="inputModal" class="modal">
+  <div class="modal-content">
+    <span id='inputClose' class="close">&times;</span>
+    <label for="inputData"></label><textarea id="inputData" rows="10" cols="30"></textarea>
+    <table id="inputExamples">
+      <thead>
+      <tr>
+        <th><img src="images/image1.png" alt="" onclick="setGraph(1)" width="150" height="150"></th>
+        <th><img src="images/image2.png" alt="" onclick="setGraph(2)" width="275" height="150"></th>
+      </tr>
+      <tr>
+        <th>Пример 3</th>
+        <th>Пример 4</th>
+      </tr>
+      </thead>
+      <tbody id="inputBody">
+      </tbody>
+    </table>
+    <button id="submitBtn">Отправить</button>
+  </div>
+</div>
+<div id="result-container">
+<table id="result"></table>
+</div>
+<div id="text-result"></div>
+<button id="NNAStep" onclick="performNextStep();" style="display: none">Далее</button>
+<button id="NNAEnd" onclick="performToEnd();" style="display: none">В конец</button>
+</div>
+<script src="script.js"></script>
+</body>
+</html>

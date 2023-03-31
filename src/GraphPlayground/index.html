@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Домашнее задание</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="js/script.js"></script>
+</head>
+<body>
+<header>
+<h1>Домашнее задание</h1></header>
+
+
+<!-- TODO Разобраться с кодом Прюфера, добавить выбор вершин, изменить ввод вершин (разобраться с prompt), добавить
+добавить проверку на цикличность графа
+
+-->
+
+<canvas id="graphCanvas" width="800" height="600"></canvas>
+<div class="button-container">
+    <button id="clearCanvas">Очистить холст</button>
+    <button id="loadJSON">Загрузить граф из JSON</button>
+    <button id="dijkstra" onclick="findShortestPath()">Дейкстра</button>
+    <button id="startPrims">MST</button>
+    <button id="getJSON" onclick="console.log(getJSONGraphData(nodes, edges))">Получить JSON</button>
+    <button id="stepForward">Вперед</button>
+    <button id="stepBack">Назад</button>
+    <button id="cancel">Отмена</button>
+    <button id="toEnd">В конец</button>
+    <button id="Prufer">Получить код Прюфера</button>
+    <button id="forwardBtn">Вперед</button>
+    <button id="backwardBtn">Назад</button>
+    <button id="cancelBtn">Отмена</button>
+    <button id="endBtn">В конец</button>
+</div>
+<div class="mode-switcher">
+    <button onclick="switchMode(1)">Режим 1</button>
+    <button onclick="switchMode(2)">Режим 2</button>
+    <button onclick="switchMode(3)">Режим 3</button>
+    <button onclick="switchMode(4)">Режим 4</button>
+</div>
+
+<br>
+<table id="graphData" class="graph-data">
+    <thead>
+    <tr>
+        <th>Узел</th>
+        <th>Связи</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<table id="result"></table>
+<div id="text-result"></div>
+<p id="textCode">Код Прюфера: <span id="pruferCodeOutput"></span></p>
+<script src="js/canvas.js"></script>
+<script src="js/json.js"></script>
+<script src="js/dijkstra.js"></script>
+<script src="js/prims.js"></script>
+<script src="js/prufer.js"></script>
+<script src="js/graph.js"></script>
+</body>
+</html>

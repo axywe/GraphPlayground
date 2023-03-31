@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimum Spanning Tree Visualization</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<h1>Minimum Spanning Tree Visualization</h1>
+<div class="main-container">
+    <canvas id="canvas" width="800" height="600"></canvas>
+    <div class="info-container">
+        <h3>Node Coordinates</h3>
+        <table id="nodeTable">
+            <thead>
+            <tr>
+                <th>Node</th>
+                <th>x</th>
+                <th>y</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <div class="buttons">
+            <button id="mst">Generate MST</button>
+            <button id="reset">Reset</button>
+        </div>
+    </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
