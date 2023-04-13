@@ -22,15 +22,17 @@ const primsButton = document.getElementById('Prims');
 const buttonsContainer = document.getElementById('buttons-container');
 const resultTable = document.getElementById('result');
 const pruferButton = document.getElementById('Prufer');
+// const revPruferButton = document.getElementById('revPrufer');
 
 
 class Node {
-    constructor(id, x, y, weight, highlight= false) {
+    constructor(id, x, y, weight, highlight= false, color = 'rgba(30, 144, 255, 0.6)') {
         this.id = id;
         this.x = x;
         this.y = y;
         this.weight = weight;
         this.highlight = highlight;
+        this.color = color;
     }
 }
 class Edge {
@@ -122,7 +124,7 @@ function drawGraph(graph, ctx, canvas) {
         if (node === selectedNode) {
             ctx.fillStyle = 'rgba(255, 0, 0, 0.6)';
         } else {
-            ctx.fillStyle = 'rgba(30, 144, 255, 0.6)';
+            ctx.fillStyle = node.color;
         }
         ctx.fill();
         ctx.strokeStyle = 'rgba(0, 0, 139, 0.8)';
@@ -352,7 +354,14 @@ function setGraph(image){
             createTable(graph);
             inputModal.style.display = 'none';
             break;
+        case 3:
+            graph = parseInput(`{"nodes":[{"id":1,"x":427.5,"y":230,"weight":"1","highlight":false,"color":"rgba(30, 144, 255, 0.6)"},{"id":2,"x":508,"y":116,"weight":"1","highlight":false,"color":"rgba(30, 144, 255, 0.6)"},{"id":3,"x":346,"y":98,"weight":"1","highlight":false,"color":"rgba(30, 144, 255, 0.6)"},{"id":4,"x":214,"y":168,"weight":"1","highlight":false,"color":"rgba(30, 144, 255, 0.6)"},{"id":5,"x":214,"y":262,"weight":"1","highlight":false,"color":"rgba(30, 144, 255, 0.6)"},{"id":6,"x":234,"y":340,"weight":"1","highlight":false,"color":"rgba(30, 144, 255, 0.6)"},{"id":7,"x":322,"y":417,"weight":"1","highlight":false,"color":"rgba(30, 144, 255, 0.6)"},{"id":8,"x":456,"y":445,"weight":"1","highlight":false,"color":"rgba(30, 144, 255, 0.6)"},{"id":9,"x":576,"y":419,"weight":"1","highlight":false,"color":"rgba(30, 144, 255, 0.6)"},{"id":10,"x":628,"y":340,"weight":"1","highlight":false,"color":"rgba(30, 144, 255, 0.6)"},{"id":11,"x":662,"y":290,"weight":"1","highlight":false,"color":"rgba(30, 144, 255, 0.6)"},{"id":12,"x":667,"y":220,"weight":"1","highlight":false,"color":"rgba(30, 144, 255, 0.6)"},{"id":13,"x":636,"y":156,"weight":"1","highlight":false,"color":"rgba(30, 144, 255, 0.6)"},{"id":14,"x":576.5,"y":133,"weight":"1","highlight":false,"color":"rgba(30, 144, 255, 0.6)"}],"edges":[{"node1":2,"node2":1,"length":"1"},{"node1":14,"node2":1,"length":"1"},{"node1":1,"node2":13,"length":"1"},{"node1":1,"node2":12,"length":"1"},{"node1":1,"node2":11,"length":"1"},{"node1":1,"node2":10,"length":"1"},{"node1":1,"node2":9,"length":"1"},{"node1":1,"node2":8,"length":"1"},{"node1":1,"node2":7,"length":"1"},{"node1":1,"node2":6,"length":"1"},{"node1":1,"node2":5,"length":"1"},{"node1":1,"node2":4,"length":"1"},{"node1":1,"node2":3,"length":"1"},{"node1":3,"node2":2,"length":"1"},{"node1":2,"node2":14,"length":"1"},{"node1":14,"node2":13,"length":"1"},{"node1":13,"node2":12,"length":"1"},{"node1":12,"node2":11,"length":"1"},{"node1":11,"node2":10,"length":"1"},{"node1":10,"node2":9,"length":"1"},{"node1":9,"node2":8,"length":"1"},{"node1":8,"node2":7,"length":"1"},{"node1":7,"node2":6,"length":"1"},{"node1":6,"node2":5,"length":"1"},{"node1":5,"node2":4,"length":"1"},{"node1":4,"node2":3,"length":"1"}]}`);
+            drawGraph(graph, modalCtx, modalCanvas);
+            createTable(graph);
+            inputModal.style.display = 'none';
+            break;
     }
+
 }
 
 modalCanvas.addEventListener('mousemove', (event) => {
@@ -372,7 +381,6 @@ modalCanvas.addEventListener('mousemove', (event) => {
         drawGraph(graph, modalCtx, modalCanvas);
     }
 });
-
 
 modalCanvas.addEventListener('mouseup', (event) => {
     const rect = modalCanvas.getBoundingClientRect();
@@ -467,7 +475,6 @@ function dijkstra(graph, startNode, endNode) {
 
     let currentNode = startNode;
     let iterationsData = [];
-
     while (currentNode) {
         const currentNodeId = currentNode.id - 1;
 
@@ -484,14 +491,16 @@ function dijkstra(graph, startNode, endNode) {
         }
 
         // Добавление текущей вершины в посещенные
+        if(Number(Array.from(visited).pop()) == currentNode.id) break;
         visited.add(currentNode.id);
-
         // Сохранение текущих данных для таблицы
         iterationsData.push({
             visited: new Set(visited),
             currentNode: currentNode.id,
             distances: Array.from(distances)
         });
+
+
 
         // Выбор следующей вершины
         let minDistance = Infinity;
@@ -520,7 +529,6 @@ function dijkstra(graph, startNode, endNode) {
 }
 
 function findShortestPath() {
-    drawGraph(graph, ctx, canvas);
     const startNodeId = parseInt(prompt('Введите начальную вершину:'));
     const endNodeId = parseInt(prompt('Введите конечную вершину:'));
     const startNode = {
@@ -536,7 +544,6 @@ function findShortestPath() {
         alert('Неправильные значения начальной или конечной вершины.');
         return;
     }
-
     const {
         path,
         iterationsData
@@ -581,7 +588,7 @@ function findShortestPath() {
     }, 0);
 
     const sHeaderCell = document.querySelector('#result th:nth-of-type(2)');
-    sHeaderCell.style.width = `${sColumnWidth}px`;
+    if(sHeaderCell) sHeaderCell.style.width = `${sColumnWidth}px`;
 
 }
 
@@ -696,8 +703,6 @@ NNAButton.onclick = () => {
     }
 };
 
-
-
 //Алгоритм Прима
 
 function primAlgorithm(graphCopy, startNode) {
@@ -759,11 +764,14 @@ primsButton.addEventListener('click', () => {
 
     // Создаем кнопки "Далее" и "В конец"
     const nextButton = document.createElement('button');
+nextButton.classList.add('centered-button');
     nextButton.id = 'nextStep';
     nextButton.innerText = 'Далее';
     document.body.appendChild(nextButton);
 
     const toEndButton = document.createElement('button');
+    toEndButton.classList.add('centered-button');
+
     toEndButton.id = 'toEnd';
     toEndButton.innerText = 'В конец';
     document.body.appendChild(toEndButton);
@@ -887,6 +895,7 @@ function isTree(graph) {
 }
 
 pruferButton.addEventListener('click', () => {
+    resultTable.style.display = 'none';
     const graphCopy = new Graph(
         JSON.parse(JSON.stringify(graph.nodes)),
         JSON.parse(JSON.stringify(graph.edges))
@@ -922,6 +931,8 @@ pruferButton.addEventListener('click', () => {
     toEndButton.id = 'toEnd';
     toEndButton.innerText = 'В конец';
     document.body.appendChild(toEndButton);
+    nextButton.classList.add('centered-button');
+    toEndButton.classList.add('centered-button');
     let currentStep = 0;
     let currentPruferCode = [];
     let degrees;
@@ -989,50 +1000,132 @@ pruferButton.addEventListener('click', () => {
 
 });
 
-//Обратный код
+// //Обратный код
+//
+// function reversePruferStep(pruferCode, availableNodes) {
+//     const nodeIndex = pruferCode.shift();
+//     const node = availableNodes.find(n => n.id === nodeIndex);
+//     const minNode = availableNodes.filter(n => !pruferCode.includes(n.id)).sort((a, b) => a.weight - b.weight || a.id - b.id)[0];
+//
+//     availableNodes.splice(availableNodes.indexOf(minNode), 1);
+//
+//     return {
+//         edge: { node1: node.id, node2: minNode.id },
+//         updatedAvailableNodes: availableNodes,
+//     };
+// }
+//
+// function reversePruferAlgorithm(pruferCode, nodes) {
+//     let availableNodes = nodes.slice();
+//     const edges = [];
+//
+//     while (pruferCode.length > 0) {
+//         const stepResult = reversePruferStep(pruferCode, availableNodes);
+//         edges.push(stepResult.edge);
+//         availableNodes = stepResult.updatedAvailableNodes;
+//     }
+//
+//     if (availableNodes.length === 2) {
+//         edges.push({ node1: availableNodes[0].id, node2: availableNodes[1].id });
+//     }
+//
+//     return edges;
+// }
+//
+// revPruferButton.addEventListener('click', () => {
+//     const pruferCode = JSON.parse('[' + prompt('Введите код Прюфера (числа через запятую):') + ']');
+//     const nodes = graph.nodes;
+//
+//     if (pruferCode.length !== nodes.length - 2) {
+//         alert('Код Прюфера некорректной длины. Длина должна быть равна числу вершин минус 2.');
+//         return;
+//     }
+//
+//     buttonsContainer.style.display = 'none';
+//     const nextButton = document.createElement('button');
+//     nextButton.id = 'nextStep';
+//     nextButton.innerText = 'Далее';
+//     document.body.appendChild(nextButton);
+//
+//     const toEndButton = document.createElement('button');
+//     toEndButton.id = 'toEnd';
+//     toEndButton.innerText = 'В конец';
+//     document.body.appendChild(toEndButton);
+//
+//     const newEdges = reversePruferAlgorithm(pruferCode.slice(), nodes);
+//     const graphCopy = new Graph(JSON.parse(JSON.stringify(nodes)), []);
+//
+//     let currentStep = 0;
+//
+//     nextButton.addEventListener('click', () => {
+//         if (currentStep < newEdges.length) {
+//             graphCopy.edges.push(newEdges[currentStep]);
+//             currentStep++;
+//             drawGraph(graphCopy, ctx, canvas);
+//         } else {
+//             buttonsContainer.style.display = '';
+//             document.body.removeChild(nextButton);
+//             document.body.removeChild(toEndButton);
+//             drawGraph(graph, ctx, canvas);
+//         }
+//     });
+//
+//     toEndButton.addEventListener('click', () => {
+//         graphCopy.edges = newEdges;
+//         drawGraph(graphCopy, ctx, canvas);
+//
+//         buttonsContainer.style.display = '';
+//         document.body.removeChild(nextButton);
+//         document.body.removeChild(toEndButton);
+//     });
+// });
 
-function reversePruferStep(pruferCode, availableNodes) {
-    const nodeIndex = pruferCode.shift();
-    const node = availableNodes.find(n => n.id === nodeIndex);
-    const minNode = availableNodes.filter(n => !pruferCode.includes(n.id)).sort((a, b) => a.weight - b.weight || a.id - b.id)[0];
+//Жадный Алгоритм Раскраски
 
-    availableNodes.splice(availableNodes.indexOf(minNode), 1);
+function greedyColoring(graph) {
+    const nodes = JSON.parse(JSON.stringify(graph.nodes)).sort((a, b) => a.id - b.id);
+    const edges = JSON.parse(JSON.stringify(graph.edges));
+    const colorMap = new Map();
 
-    return {
-        edge: { node1: node.id, node2: minNode.id },
-        updatedAvailableNodes: availableNodes,
-    };
+    nodes.forEach(node => {
+        const adjacentNodes = edges
+            .filter(edge => edge.node1 === node.id || edge.node2 === node.id)
+            .map(edge => (edge.node1 === node.id ? edge.node2 : edge.node1));
+
+        const usedColors = new Set();
+        adjacentNodes.forEach(adjacentNode => {
+            const color = colorMap.get(adjacentNode);
+            if (color) {
+                usedColors.add(color);
+            }
+        });
+
+        let color = 1;
+        while (usedColors.has(color)) {
+            color++;
+        }
+
+        colorMap.set(node.id, color);
+    });
+
+    return colorMap;
 }
+const GreedyBtn = document.getElementById('Greedy');
+GreedyBtn.addEventListener('click', () => {
+    const graphCopy = new Graph(
+        JSON.parse(JSON.stringify(graph.nodes)),
+        JSON.parse(JSON.stringify(graph.edges))
+    );
 
-function reversePruferAlgorithm(pruferCode, nodes) {
-    let availableNodes = nodes.slice();
-    const edges = [];
+    const colorMap = greedyColoring(graphCopy);
 
-    while (pruferCode.length > 0) {
-        const stepResult = reversePruferStep(pruferCode, availableNodes);
-        edges.push(stepResult.edge);
-        availableNodes = stepResult.updatedAvailableNodes;
-    }
-
-    if (availableNodes.length === 2) {
-        edges.push({ node1: availableNodes[0].id, node2: availableNodes[1].id });
-    }
-
-    return edges;
-}
-
-const revPruferButton = document.getElementById('revPrufer');
-
-revPruferButton.addEventListener('click', () => {
-    const pruferCode = JSON.parse('[' + prompt('Введите код Прюфера (числа через запятую):') + ']');
-    const nodes = graph.nodes;
-
-    if (pruferCode.length !== nodes.length - 2) {
-        alert('Код Прюфера некорректной длины. Длина должна быть равна числу вершин минус 2.');
-        return;
-    }
+    graphCopy.nodes.forEach(node => {
+        node.color = `rgba(${(colorMap.get(node.id) * 60) % 255}, ${(colorMap.get(node.id) * 100) % 255}, ${(colorMap.get(node.id) * 130) % 255}, 0.6)`;
+    });
+    document.getElementById('result').style.display = 'none';
 
     buttonsContainer.style.display = 'none';
+
     const nextButton = document.createElement('button');
     nextButton.id = 'nextStep';
     nextButton.innerText = 'Далее';
@@ -1042,32 +1135,317 @@ revPruferButton.addEventListener('click', () => {
     toEndButton.id = 'toEnd';
     toEndButton.innerText = 'В конец';
     document.body.appendChild(toEndButton);
-
-    const newEdges = reversePruferAlgorithm(pruferCode.slice(), nodes);
-    const graphCopy = new Graph(JSON.parse(JSON.stringify(nodes)), []);
+    nextButton.classList.add('centered-button');
+    toEndButton.classList.add('centered-button');
 
     let currentStep = 0;
+    let colorQueue = Array.from(colorMap);
+    let finished = false;
 
     nextButton.addEventListener('click', () => {
-        if (currentStep < newEdges.length) {
-            graphCopy.edges.push(newEdges[currentStep]);
+        if (currentStep < colorQueue.length) {
+            graph.nodes.find(node => node.id === colorQueue[currentStep][0]).color = graphCopy.nodes.find(node => node.id === colorQueue[currentStep][0]).color;
+            drawGraph(graph, ctx, canvas);
             currentStep++;
-            drawGraph(graphCopy, ctx, canvas);
-        } else {
+        }
+
+        if (currentStep === colorQueue.length && !finished) {
+            finished = true;
+            toEndButton.style.display = 'none';
+        } else if (currentStep === colorQueue.length && finished) {
+            graph.nodes.forEach(node => {
+                node.color = 'rgba(30, 144, 255, 0.6)';
+            });
+            drawGraph(graph, ctx, canvas);
+            currentStep = 0;
+            finished = false;
+            toEndButton.style.display = 'none';
             buttonsContainer.style.display = '';
             document.body.removeChild(nextButton);
             document.body.removeChild(toEndButton);
-            drawGraph(graph, ctx, canvas);
+        } else if (finished) {
+            buttonsContainer.style.display = '';
+            document.body.removeChild(nextButton);
+            document.body.removeChild(toEndButton);
         }
     });
 
     toEndButton.addEventListener('click', () => {
-        graphCopy.edges = newEdges;
-        drawGraph(graphCopy, ctx, canvas);
+        graph.nodes.forEach(node => {
+            node.color = graphCopy.nodes.find(nodeCopy => nodeCopy.id === node.id).color;
+        });
+        drawGraph(graph, ctx, canvas);
 
-        buttonsContainer.style.display = '';
-        document.body.removeChild(nextButton);
-        document.body.removeChild(toEndButton);
+        finished = true;
+        currentStep = colorQueue.length;
+        toEndButton.style.display = 'none';
     });
 });
 
+//Точный Алгоритм Раскраски
+function exhaustiveColoring(graph, currentColoring, currentNode, bestColoring) {
+    if (currentNode >= graph.nodes.length) {
+        if (!bestColoring || maxColor(currentColoring) < maxColor(bestColoring)) {
+            return currentColoring;
+        }
+        return bestColoring;
+    }
+
+    const adjacentNodes = graph.edges
+        .filter(edge => edge.node1 === graph.nodes[currentNode].id || edge.node2 === graph.nodes[currentNode].id)
+        .map(edge => (edge.node1 === graph.nodes[currentNode].id ? edge.node2 : edge.node1));
+
+    for (let color = 1; color <= maxColor(currentColoring) + 1; color++) {
+        let validColor = true;
+        for (const adjacentNode of adjacentNodes) {
+            if (currentColoring[adjacentNode - 1] === color) {
+                validColor = false;
+                break;
+            }
+        }
+
+        if (validColor) {
+            const newColoring = currentColoring.slice();
+            newColoring[currentNode] = color;
+            bestColoring = exhaustiveColoring(graph, newColoring, currentNode + 1, bestColoring);
+        }
+    }
+
+    return bestColoring;
+}
+
+function maxColor(coloring) {
+    return Math.max.apply(null, coloring);
+}
+
+const exhaustiveBtn = document.getElementById('Exhaustive');
+exhaustiveBtn.addEventListener('click', () => {
+    const graphCopy = new Graph(
+        JSON.parse(JSON.stringify(graph.nodes)),
+        JSON.parse(JSON.stringify(graph.edges))
+    );
+
+    const bestColoring = exhaustiveColoring(graphCopy, Array(graphCopy.nodes.length).fill(0), 0, null);
+
+    graphCopy.nodes.forEach((node, index) => {
+        node.color = `rgba(${(bestColoring[index] * 60) % 255}, ${(bestColoring[index] * 100) % 255}, ${(bestColoring[index] * 130) % 255}, 0.6)`;
+    });
+    document.getElementById('result').style.display = 'none';
+    buttonsContainer.style.display = 'none';
+
+    const nextButton = document.createElement('button');
+    nextButton.classList.add('centered-button');
+    nextButton.id = 'nextStep';
+    nextButton.innerText = 'Далее';
+    document.body.appendChild(nextButton);
+
+    let currentStep = 0;
+    let colorQueue = bestColoring;
+    let finished = false;
+    graph.nodes.forEach(node => {
+        node.color = graphCopy.nodes.find(nodeCopy => nodeCopy.id === node.id).color;
+    });
+    drawGraph(graph, ctx, canvas);
+
+    const colorsUsed = new Set(Array.from(bestColoring.values())).size;
+    textResult.innerHTML = `Количество использованных цветов: ${colorsUsed}`;
+    textResult.style.display = '';
+    finished = true;
+    currentStep = colorQueue.length;
+    nextButton.addEventListener('click', () => {
+        if (currentStep < colorQueue.length) {
+            graph.nodes.find(node => node.id === graphCopy.nodes[currentStep].id).color = graphCopy.nodes[currentStep].color;
+            drawGraph(graph, ctx, canvas);
+            currentStep++;
+        }
+
+    if (currentStep === colorQueue.length && finished) {
+            graph.nodes.forEach(node => {
+                node.color = 'rgba(30, 144, 255, 0.6)';
+            });
+            drawGraph(graph, ctx, canvas);
+            currentStep = 0;
+            finished = false;
+            buttonsContainer.style.display = '';
+            document.body.removeChild(nextButton);
+            textResult.style.display = 'none';
+
+    } else if (finished) {
+            buttonsContainer.style.display = '';
+        textResult.style.display = 'none';
+        document.body.removeChild(nextButton);
+        }
+    });
+});
+
+
+
+
+
+// Алгоритм Форда-Фалкерсона для поиска максимального потока
+const MaxFlowBtn = document.getElementById('MaxFlow');
+MaxFlowBtn.addEventListener('click', () => {
+    const source = parseInt(prompt('Введите ID начального узла:', '1'));
+    const target = parseInt(prompt('Введите ID конечного узла:', '4'));
+
+    if (!graph.nodes.some(node => node.id === source) || !graph.nodes.some(node => node.id === target)) {
+        alert('Один или оба введенных ID не существуют в графе.');
+        return;
+    }
+
+    if (source === target) {
+        alert('ID начального и конечного узла совпадают.');
+        return;
+    }
+
+    const graphCopy = JSON.parse(JSON.stringify(graph));
+    const originalGraphState = JSON.parse(JSON.stringify(graph));
+    const allSteps = [];
+    let maxFlow = 0;
+    let path = findAugmentingPath(graphCopy.edges, source, target);
+
+    while (path !== null) {
+        allSteps.push(path);
+
+        let pathFlow = Infinity;
+        for (let i = 0; i < path.length - 1; i++) {
+            const edge = graphCopy.edges.find(edge => edge.node1 === path[i] && edge.node2 === path[i + 1]);
+            pathFlow = Math.min(pathFlow, edge.length);
+        }
+
+        const updatedEdges = [];
+        for (let i = 0; i < path.length - 1; i++) {
+            const edge = graphCopy.edges.find(edge => edge.node1 === path[i] && edge.node2 === path[i + 1]);
+            edge.length -= pathFlow;
+
+            const originalEdge = graph.edges.find(edge => edge.node1 === path[i] && edge.node2 === path[i + 1]);
+            updatedEdges.push({ edge: originalEdge, updatedLength: parseFloat(originalEdge.length) - pathFlow });
+
+            let reverseEdge = graphCopy.edges.find(edge => edge.node1 === path[i + 1] && edge.node2 === path[i]);
+            if (reverseEdge) {
+                reverseEdge.length += pathFlow;
+            } else {
+                reverseEdge = { node1: path[i + 1], node2: path[i], length: pathFlow };
+                graphCopy.edges.push(reverseEdge);
+            }
+        }
+
+        allSteps[allSteps.length - 1].updatedEdges = updatedEdges;
+        maxFlow += pathFlow;
+        path = findAugmentingPath(graphCopy.edges, source, target);
+    }
+
+    buttonsContainer.style.display = 'none';
+
+    const nextButton = document.createElement('button');
+    nextButton.id = 'nextStep';
+    nextButton.innerText = 'Далее';
+    document.body.appendChild(nextButton);
+
+    const toEndButton = document.createElement('button');
+    toEndButton.id = 'toEnd';
+    toEndButton.innerText = 'В конец';
+    document.body.appendChild(toEndButton);
+    nextButton.classList.add('centered-button');
+    toEndButton.classList.add('centered-button');
+
+    document.getElementById('text-result').innerHTML = `Максимальный поток: ${maxFlow}`;
+    document.getElementById('text-result').style.display = '';
+
+    let currentStep = 0;
+    let finished = false;
+
+    nextButton.addEventListener('click', () => {
+        if (currentStep < allSteps.length) {
+            graph.edges.forEach(edge => edge.highlight = false);
+            const currentPath = allSteps[currentStep];
+            currentPath.forEach((nodeId, index) => {
+                if (index < currentPath.length - 1) {
+                    const edge = graph.edges.find(edge => edge.node1 === nodeId && edge.node2 === currentPath[index + 1]);
+                    if (edge) {
+                        edge.highlight = true;
+                    }
+                }
+            });
+            currentPath.updatedEdges.forEach(({ edge, updatedLength }) => {
+                edge.length = updatedLength;
+            });
+            drawGraph(graph, ctx, canvas);
+            currentStep++;
+        }    if (currentStep === allSteps.length && !finished) {
+            finished = true;
+            toEndButton.style.display = 'none';
+        } else if (currentStep === allSteps.length && finished) {
+            graph.edges.forEach(edge => edge.highlight = false);
+            drawGraph(graph, ctx, canvas);
+            currentStep = 0;
+            finished = false;
+            toEndButton.style.display = 'none';
+            buttonsContainer.style.display = '';
+            graph.edges = originalGraphState.edges;
+            drawGraph(graph, ctx, canvas);
+            document.body.removeChild(nextButton);
+            document.body.removeChild(toEndButton);
+            textResult.style.display = 'none';
+        } else if (finished) {
+            buttonsContainer.style.display = '';
+            document.body.removeChild(nextButton);
+            document.body.removeChild(toEndButton);
+            textResult.style.display = 'none';
+        }
+    });
+
+    toEndButton.addEventListener('click', () => {
+        graph.edges.forEach(edge => edge.highlight = false);
+        allSteps.forEach(path => {
+            path.forEach((nodeId, index) => {
+                if (index < path.length - 1) {
+                    const edge = graph.edges.find(edge => edge.node1 === nodeId && edge.node2 === path[index + 1]);
+                    if (edge) {
+                        edge.highlight = true;
+                    }
+                }
+            });
+        });
+        drawGraph(graph, ctx, canvas);
+
+        finished = true;
+        currentStep = allSteps.length;
+        toEndButton.style.display = 'none';
+    });
+});
+
+function findAugmentingPath(edges, source, target) {
+    const queue = [source];
+    const visited = new Set();
+    const parent = {};
+
+    while (queue.length) {
+        const currentNode = queue.shift();
+
+        if (currentNode === target) {
+            const path = [target];
+
+            while (path[0] !== source) {
+                path.unshift(parent[path[0]]);
+            }
+
+            return path;
+        }
+
+        visited.add(currentNode);
+
+        const adjacentEdges = edges.filter(edge => edge.node1 === currentNode && edge.length > 0);
+        for (const edge of adjacentEdges) {
+            const nextNode = edge.node2;
+
+            if (!visited.has(nextNode)) {
+                parent[nextNode] = currentNode;
+                visited.add(nextNode);
+                queue.push(nextNode);
+            }
+        }
+    }
+
+    return null;
+}
